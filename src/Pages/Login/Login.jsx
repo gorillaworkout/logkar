@@ -67,22 +67,18 @@ export default function Login() {
       let allIdUser = []
       const data  = await AuthDataService.getAllAuth();
       data.docs.map((doc)=>{
-        // console.log(doc.id)
         allIdUser.push(doc.id)
         allUserFirestore.push(doc.data())
       })
       if(allUserFirestore.length){
-        let filter = allUserFirestore.filter((val,index)=>{
-            return val.name.toUpperCase() === name.toUpperCase()
-        })
         
         let findId = allUserFirestore.findIndex((val,index)=>{
           return val.name.toUpperCase() === name.toUpperCase()
         })
-        // console.log(findId,' find id')
         if(findId !== -1  && allUserFirestore[findId].password === password && allUserFirestore[findId].name === name){
           alert('berhasil login')
           navigate('/home')
+          dispatch({ type: "IDACTIVE",id:allIdUser[findId]});
         }else if (findId !== -1 &&allUserFirestore[findId].name === name ){
           alert('nama sudah di gunakan')
         }else {
@@ -93,10 +89,12 @@ export default function Login() {
             alamat:'',
             telepon:''
           }
-          await AuthDataService.addAuth(dataCustomer)
+          let addAuth = await AuthDataService.addAuth(dataCustomer)
+          let idCustomer = addAuth._key.path.segments[1]
+          dispatch({ type: "IDACTIVE",id:idCustomer});
           navigate('/home')
         }
-        dispatch({ type: "IDACTIVE",id:allIdUser[findId]});
+        
       }else {
         // database masih kosong
         let dataCustomer = {
@@ -107,6 +105,7 @@ export default function Login() {
           telepon:''
         }
         await AuthDataService.addAuth(dataCustomer)
+        dispatch({ type: "IDACTIVE",id:allIdUser[0]});
         navigate('/home')
       }
     }else {

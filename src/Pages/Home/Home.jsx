@@ -12,9 +12,8 @@ import {
   updateQty,
 } from "../../Redux/Actions/ProductActions";
 // import DetailUser from "../../Component/DetailUser";
-import AuthDataService from '../../Services/auth.services'
-import {BsFillPatchCheckFill} from 'react-icons/bs'
-
+import AuthDataService from "../../Services/auth.services";
+import { BsFillPatchCheckFill } from "react-icons/bs";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -24,9 +23,10 @@ export default function Home() {
   const toggle = () => setModal(!modal);
   const toggleReview = () => setReviewModal(!modal);
   const Product = useSelector((state) => state.Product);
+  // console.log(Product,'product')
   const [activeStatus, setActiveStatus] = useState("Home");
-  const [isDataLengkap, setIsDataLengkap] = useState(false); 
-  const [isSuccess,setIsSuccess] = useState(false)
+  const [isDataLengkap, setIsDataLengkap] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [listHeader, setListHeader] = useState([
     "Home",
     "Store",
@@ -40,27 +40,30 @@ export default function Home() {
   });
 
   // FETCHING USER FROM FIRESTORE
-  const fetching=async()=>{
+  const fetching = async () => {
+    const Auth = await AuthDataService.getAuth(Product?.idActive);
+    setDataCustomer(Auth.data());
 
-    const Auth = await AuthDataService.getAuth(Product?.idActive)
-    setDataCustomer(Auth.data())
- 
-    if(Auth.data().name !== '' && Auth.data().email !== '' && Auth.data().telepon !== '' && Auth.data().alamat !== ''){
-      setIsDataLengkap(true)
-    }else {
-      setIsDataLengkap(false)
+    if (
+      Auth.data().name !== "" &&
+      Auth.data().email !== "" &&
+      Auth.data().telepon !== "" &&
+      Auth.data().alamat !== ""
+    ) {
+      setIsDataLengkap(true);
+    } else {
+      setIsDataLengkap(false);
     }
-  }
-  useEffect(()=>{
-    if(Product?.idActive !== ''){
-      fetching()
-    }else {
-      navigate('/')
+  };
+  useEffect(() => {
+    if (Product?.idActive !== "") {
+      fetching();
+    } else {
+      navigate("/");
     }
-  },[])
+  }, []);
 
   // FETCHING USER FROM FIRESTORE
-
 
   // HOME EDIT DETAIL
 
@@ -83,7 +86,6 @@ export default function Home() {
     });
   };
   const onChangeAlamat = (value) => {
-  
     setDataCustomer.alamat = value;
     setDataCustomer({
       ...dataCustomer,
@@ -105,10 +107,10 @@ export default function Home() {
     }
   };
 
-  const onSaveData = async() => {
+  const onSaveData = async () => {
     let checkData = onCheckData();
     if (checkData) {
-      await  AuthDataService.updateAuth(Product?.idActive,dataCustomer)
+      await AuthDataService.updateAuth(Product?.idActive, dataCustomer);
       setModal(false);
     } else {
       alert("ada data ksong");
@@ -132,20 +134,20 @@ export default function Home() {
     setActiveStatus(value);
   };
 
-  const onLogout=()=>{
-    navigate('/')
-  }
+  const onLogout = () => {
+    navigate("/");
+  };
   const onReview = () => {
     setReviewModal(true);
   };
 
-  const onOrderData=()=>{
-    setIsSuccess(true)
-    dispatch({ type: "DELETECART"});
-    setTimeout(()=>{
-      setIsSuccess(false)
-    },3000)
-  }
+  const onOrderData = () => {
+    setIsSuccess(true);
+    dispatch({ type: "DELETECART" });
+    setTimeout(() => {
+      setIsSuccess(false);
+    }, 3000);
+  };
 
   const onAddToCart = (value, id) => {
     // dispatch({ type: "ADDPRODUCTTOCART", product: value });
@@ -231,18 +233,18 @@ export default function Home() {
     });
   };
 
-  const renderPurchasing=()=>{
-    return Product?.cart?.map((val,index)=>{
+  const renderPurchasing = () => {
+    return Product?.cart?.map((val, index) => {
       return (
         <>
-           <tr>
-              <td>{val.name}</td>
-              <td>{val.qty}</td>
-            </tr>
+          <tr>
+            <td>{val.name}</td>
+            <td>{val.qty}</td>
+          </tr>
         </>
-      )
-    })
-  }
+      );
+    });
+  };
   return (
     <>
       <div className="wrapper-container">
@@ -258,7 +260,7 @@ export default function Home() {
             <div className="body-home">
               {activeStatus === "Home" ? (
                 <>
-                {/* <DetailUser/> */}
+                  {/* <DetailUser/> */}
                   {/* HOME */}
                   <div className="home-card">
                     <div className="detail-input">
@@ -308,7 +310,7 @@ export default function Home() {
                           value={dataCustomer.email}
                         />
                         <input
-                          type="text"
+                          type="number"
                           placeholder="Masukan Telepon Anda"
                           className="input-data"
                           onChange={(e) => onChangeTelepon(e.target.value)}
@@ -394,15 +396,11 @@ export default function Home() {
                           </ModalFooter>
                         </Modal>
                       </>
-                    ) : 
-                    isSuccess ? 
-                    
-                    (
+                    ) : isSuccess ? (
                       <>
-                      <div className="success-card">
-                          
-                            <BsFillPatchCheckFill className="icon-success rotate"/>
-                          
+                        <div className="success-card">
+                          <BsFillPatchCheckFill className="icon-success rotate" />
+
                           <h1>Pembelian Berhasil</h1>
                           <div
                             className="btn-home"
@@ -410,13 +408,11 @@ export default function Home() {
                           >
                             Kembali ke Store
                           </div>
-                      </div>
-                     
+                        </div>
                       </>
-                    )
-                    :
-                    <>
-                       <div className="store-not-ready">
+                    ) : (
+                      <>
+                        <div className="store-not-ready">
                           <p>Cart Kosong</p>
                           <div
                             className="btn-home"
@@ -425,8 +421,8 @@ export default function Home() {
                             Kembali ke Store
                           </div>
                         </div>
-                    </>
-                  }
+                      </>
+                    )}
                   </div>
                   {/* Cart */}
                 </>
