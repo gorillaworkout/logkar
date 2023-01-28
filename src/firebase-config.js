@@ -4,7 +4,7 @@ import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
 import { initializeApp } from "firebase/app";
 import {getFirestore} from 'firebase/firestore'
-import {getAuth,GoogleAuthProvider,signInWithPopup} from 'firebase/auth'
+import {getAuth,GoogleAuthProvider,} from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBAQr8W3hz9DghUhU40PHWp6exjXgoaGxI",

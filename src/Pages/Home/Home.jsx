@@ -42,7 +42,7 @@ export default function Home() {
   // FETCHING USER FROM FIRESTORE
   const fetching=async()=>{
 
-    const Auth = await AuthDataService.getAuth(Product.idActive)
+    const Auth = await AuthDataService.getAuth(Product?.idActive)
     setDataCustomer(Auth.data())
  
     if(Auth.data().name !== '' && Auth.data().email !== '' && Auth.data().telepon !== '' && Auth.data().alamat !== ''){
@@ -105,10 +105,10 @@ export default function Home() {
     }
   };
 
-  const onSaveData = () => {
+  const onSaveData = async() => {
     let checkData = onCheckData();
     if (checkData) {
-       AuthDataService.updateAuth(Product?.idActive,dataCustomer)
+      await  AuthDataService.updateAuth(Product?.idActive,dataCustomer)
       setModal(false);
     } else {
       alert("ada data ksong");
