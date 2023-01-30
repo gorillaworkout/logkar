@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../Component/Header";
-// import Article from "../../Component/Article";
-// import Iklan from "../../Component/Iklan";
 import "../../Style/Home.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
@@ -11,11 +9,11 @@ import {
   addProductToCart,
   updateQty,
 } from "../../Redux/Actions/ProductActions";
-// import DetailUser from "../../Component/DetailUser";
 import AuthDataService from "../../Services/auth.services";
 import { BsFillPatchCheckFill } from "react-icons/bs";
-
+import { toast } from 'react-toastify';
 export default function Home() {
+  toast.configure()
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
@@ -113,7 +111,15 @@ export default function Home() {
       await AuthDataService.updateAuth(Product?.idActive, dataCustomer);
       setModal(false);
     } else {
-      alert("ada data ksong");
+      toast.error(`Ada data kosong`, {
+        position: "top-center",
+        autoClose: 1400,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
       setModal(true);
     }
   };

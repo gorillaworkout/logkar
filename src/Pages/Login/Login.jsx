@@ -7,7 +7,11 @@ import debounce from 'lodash.debounce';
 import _ from "lodash";
 import AuthDataService from '../../Services/auth.services'
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from 'react-toastify';
+
+
 export default function Login() {
+  toast.configure()
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isPassVisible, setIsPassVisible] = useState(false);
@@ -26,11 +30,11 @@ export default function Login() {
   const debounce = useCallback(
     _.debounce((value) => {
       if(value.length > 3 && value.length <=30){
-        setName(value)
         setIsName(true)
+        setName(value)
       }else {
-        setErrorName('Min 3 char & max 30 char')
         setIsName(false)
+        setErrorName('Min 3 char & max 30 char')
       }
     }, 1000),
     []
@@ -76,11 +80,29 @@ export default function Login() {
           return val.name.toUpperCase() === name.toUpperCase()
         })
         if(findId !== -1  && allUserFirestore[findId].password === password && allUserFirestore[findId].name === name){
-          alert('berhasil login')
+          toast.success(`Berhasil Login`, {
+            position: "top-center",
+            autoClose: 1400,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+        setTimeout(()=>{
           navigate('/home')
           dispatch({ type: "IDACTIVE",id:allIdUser[findId]});
+        },1500)
         }else if (findId !== -1 &&allUserFirestore[findId].name === name ){
-          alert('nama sudah di gunakan')
+          toast.error(`Nama Sudah digunakan`, {
+            position: "top-center",
+            autoClose: 1400,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
         }else {
           let dataCustomer = {
             name:name,
@@ -109,7 +131,15 @@ export default function Login() {
         navigate('/home')
       }
     }else {
-      alert('pengisian salah')
+      toast.error(`Pengisian Salah`, {
+        position: "top-center",
+        autoClose: 1400,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
     }
   }
   return (
@@ -174,7 +204,7 @@ export default function Login() {
                   </div>
                   <p className="forgot-password mt-1" style={{color:'red'}}>
                     {
-                      name === false ?
+                      isName === false ?
                        errorName
                       :
                       ''
@@ -182,7 +212,7 @@ export default function Login() {
                   </p>
                   <p className="forgot-password mt-1" style={{color:'red'}}>
                     {
-                      password === false ?
+                      isPassword === false ?
                       errorPass
                       :
                       ''

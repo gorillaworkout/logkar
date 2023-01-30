@@ -11,6 +11,7 @@ import {Provider} from 'react-redux'
 import Thunk from 'redux-thunk'
 import Reducers from './Redux/Reducers'
 import {createStore, applyMiddleware} from 'redux'
+import 'react-toastify/dist/ReactToastify.css';
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
      <Provider store={createStore(Reducers,{},applyMiddleware(Thunk))}>
