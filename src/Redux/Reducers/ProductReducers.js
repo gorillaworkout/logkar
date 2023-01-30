@@ -3,6 +3,9 @@ const INITIAL_STATE = {
   isLoadingProduct: true,
   cart: [],
   idActive: "",
+  isDataLengkap:false,
+  activeStatus:"Home",
+  isSuccess:false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,6 +25,12 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, cart: [] };
     case "IDACTIVE":
       return {...state,idActive:action.id}
+    case "DATALENGKAP":
+      return {...state,isDataLengkap:action.result}
+    case "ACTIVESTATUS":
+      return {...state,activeStatus:action.status}
+    case "ISSUCCESS":
+      return {...state,isSuccess:action.status}
     default:
       return state;
   }

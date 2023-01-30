@@ -1,8 +1,108 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
+import AuthDataService from "../Services/auth.services";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 export default function DetailUser() {
+  toast.configure();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const Product = useSelector((state) => state.Product);
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
+  const [dataCustomer, setDataCustomer] = useState({
+    name: "",
+    email: "",
+    telepon: "",
+    alamat: "",
+  });
 
-    
+  // FETCHING USER FROM FIRESTORE
+  const fetching = async () => {
+    const Auth = await AuthDataService.getAuth(Product?.idActive);
+    setDataCustomer(Auth.data());
+
+    if (
+      Auth.data().name !== "" &&
+      Auth.data().email !== "" &&
+      Auth.data().telepon !== "" &&
+      Auth.data().alamat !== ""
+    ) {
+      dispatch({ type: "DATALENGKAP", result: true });
+    } else {
+      dispatch({ type: "DATALENGKAP", result: false });
+    }
+  };
+  useEffect(() => {
+    if (Product?.idActive !== "") {
+      fetching();
+    } else {
+      navigate("/");
+    }
+  }, []);
+
+  // FETCHING USER FROM FIRESTORE
+
+  const onChangeName = (value) => {
+    setDataCustomer({
+      ...dataCustomer,
+      name: value,
+    });
+  };
+  const onChangeEmail = (value) => {
+    setDataCustomer({
+      ...dataCustomer,
+      email: value,
+    });
+  };
+  const onChangeTelepon = (value) => {
+    setDataCustomer({
+      ...dataCustomer,
+      telepon: value,
+    });
+  };
+  const onChangeAlamat = (value) => {
+    setDataCustomer.alamat = value;
+    setDataCustomer({
+      ...dataCustomer,
+      alamat: value,
+    });
+  };
+
+  const onCheckData = () => {
+    if (
+      dataCustomer.name !== "" &&
+      dataCustomer.email !== "" &&
+      dataCustomer.telepon !== "" &&
+      dataCustomer.alamat !== ""
+    ) {
+      dispatch({ type: "DATALENGKAP", result: true });
+      return true;
+    } else {
+      dispatch({ type: "DATALENGKAP", result: false });
+      return false;
+    }
+  };
+
+  const onSaveData = async () => {
+    let checkData = onCheckData();
+    if (checkData) {
+      await AuthDataService.updateAuth(Product?.idActive, dataCustomer);
+      setModal(false);
+    } else {
+      toast.error(`Ada data kosong`, {
+        position: "top-center",
+        autoClose: 1400,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setModal(true);
+    }
+  };
   return (
     <>
       <div className="home-card">
@@ -24,7 +124,7 @@ export default function DetailUser() {
             <p>{dataCustomer.alamat}</p>
           </div>
         </div>
-        {isDataLengkap ? (
+        {Product.isDataLengkap ? (
           <></>
         ) : (
           <div className="button-lengkapi">
@@ -66,7 +166,7 @@ export default function DetailUser() {
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onOrderData}>Save</Button>
+            <Button onClick={onSaveData}>Save</Button>
           </ModalFooter>
         </Modal>
       </div>
