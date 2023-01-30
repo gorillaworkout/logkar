@@ -12,117 +12,39 @@ import {
 import AuthDataService from "../../Services/auth.services";
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import { toast } from 'react-toastify';
+import DetailUser from "../../Component/DetailUser";
 export default function Home() {
   toast.configure()
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [modal, setModal] = useState(false);
+
   const [reviewModal, setReviewModal] = useState(false);
-  const toggle = () => setModal(!modal);
-  const toggleReview = () => setReviewModal(!modal);
+  const toggleReview = () => setReviewModal(!reviewModal);
   const Product = useSelector((state) => state.Product);
   // console.log(Product,'product')
   const [activeStatus, setActiveStatus] = useState("Home");
-  const [isDataLengkap, setIsDataLengkap] = useState(false);
+  
   const [isSuccess, setIsSuccess] = useState(false);
   const [listHeader, setListHeader] = useState([
     "Home",
     "Store",
     "Shopping Cart",
   ]);
-  const [dataCustomer, setDataCustomer] = useState({
-    name: "",
-    email: "",
-    telepon: "",
-    alamat: "",
-  });
 
-  // FETCHING USER FROM FIRESTORE
-  const fetching = async () => {
-    const Auth = await AuthDataService.getAuth(Product?.idActive);
-    setDataCustomer(Auth.data());
 
-    if (
-      Auth.data().name !== "" &&
-      Auth.data().email !== "" &&
-      Auth.data().telepon !== "" &&
-      Auth.data().alamat !== ""
-    ) {
-      setIsDataLengkap(true);
-    } else {
-      setIsDataLengkap(false);
-    }
-  };
-  useEffect(() => {
-    if (Product?.idActive !== "") {
-      fetching();
-    } else {
-      navigate("/");
-    }
-  }, []);
 
-  // FETCHING USER FROM FIRESTORE
 
   // HOME EDIT DETAIL
 
-  const onChangeName = (value) => {
-    setDataCustomer({
-      ...dataCustomer,
-      name: value,
-    });
-  };
-  const onChangeEmail = (value) => {
-    setDataCustomer({
-      ...dataCustomer,
-      email: value,
-    });
-  };
-  const onChangeTelepon = (value) => {
-    setDataCustomer({
-      ...dataCustomer,
-      telepon: value,
-    });
-  };
-  const onChangeAlamat = (value) => {
-    setDataCustomer.alamat = value;
-    setDataCustomer({
-      ...dataCustomer,
-      alamat: value,
-    });
-  };
-  const onCheckData = () => {
-    if (
-      dataCustomer.name !== "" &&
-      dataCustomer.email !== "" &&
-      dataCustomer.telepon !== "" &&
-      dataCustomer.alamat !== ""
-    ) {
-      setIsDataLengkap(true);
-      return true;
-    } else {
-      setIsDataLengkap(false);
-      return false;
-    }
+
+  const onOrderData = () => {
+    setIsSuccess(true);
+    dispatch({ type: "DELETECART" });
+    setTimeout(() => {
+      setIsSuccess(false);
+    }, 3000);
   };
 
-  const onSaveData = async () => {
-    let checkData = onCheckData();
-    if (checkData) {
-      await AuthDataService.updateAuth(Product?.idActive, dataCustomer);
-      setModal(false);
-    } else {
-      toast.error(`Ada data kosong`, {
-        position: "top-center",
-        autoClose: 1400,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
-      setModal(true);
-    }
-  };
 
   // HOME EDIT DETAIL
 
@@ -147,13 +69,6 @@ export default function Home() {
     setReviewModal(true);
   };
 
-  const onOrderData = () => {
-    setIsSuccess(true);
-    dispatch({ type: "DELETECART" });
-    setTimeout(() => {
-      setIsSuccess(false);
-    }, 3000);
-  };
 
   const onAddToCart = (value, id) => {
     // dispatch({ type: "ADDPRODUCTTOCART", product: value });
@@ -268,7 +183,8 @@ export default function Home() {
                 <>
                   {/* <DetailUser/> */}
                   {/* HOME */}
-                  <div className="home-card">
+                  <DetailUser/>
+                  {/* <div className="home-card">
                     <div className="detail-input">
                       <div className="input-detail">
                         <p>Name:</p>
@@ -334,14 +250,14 @@ export default function Home() {
                         <Button onClick={onSaveData}>Save</Button>
                       </ModalFooter>
                     </Modal>
-                  </div>
+                  </div> */}
                   {/* HOME */}
                 </>
               ) : activeStatus === "Store" ? (
                 <>
                   {/* STORE */}
                   <div className="store-card">
-                    {isDataLengkap ? (
+                    {Product.isDataLengkap ? (
                       <>{renderStoreCard()}</>
                     ) : (
                       <>
