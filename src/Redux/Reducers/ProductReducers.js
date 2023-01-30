@@ -5,7 +5,10 @@ const INITIAL_STATE = {
   idActive: "",
   isDataLengkap:false,
   activeStatus:"Home",
-  isSuccess:false
+  isSuccess:false,
+  listHeader:[
+    "Home","Store","Shopping Cart"
+  ]
 };
 
 export default (state = INITIAL_STATE, action) => {
