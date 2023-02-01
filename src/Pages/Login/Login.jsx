@@ -66,7 +66,7 @@ export default function Login() {
   const onLogin=async()=>{
 
     if(name && password){
-      
+      let today = new Date()
       let allUserFirestore = []
       let allIdUser = []
       const data  = await AuthDataService.getAllAuth();
@@ -109,7 +109,8 @@ export default function Login() {
             password:password,
             email:'',
             alamat:'',
-            telepon:''
+            telepon:'',
+            date:today
           }
           let addAuth = await AuthDataService.addAuth(dataCustomer)
           let idCustomer = addAuth._key.path.segments[1]
@@ -124,7 +125,8 @@ export default function Login() {
           password:password,
           email:'',
           alamat:'',
-          telepon:''
+          telepon:'',
+          date:today
         }
         await AuthDataService.addAuth(dataCustomer)
         dispatch({ type: "IDACTIVE",id:allIdUser[0]});
